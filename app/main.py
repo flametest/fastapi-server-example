@@ -19,4 +19,5 @@ if __name__ == '__main__':
         host=settings.SERVER_HOST,
         port=settings.SERVER_PORT,
         log_level=settings.LOGGING_LEVEL,
+        # reload=True,
     )

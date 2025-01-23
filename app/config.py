@@ -24,11 +24,7 @@ class Settings(BaseSettings):
 
     API_PREFIX: str = ""
 
-    MYSQL_SERVER: str
-    MYSQL_PORT: int = 3306
-    MYSQL_USER: str
-    MYSQL_PASSWORD: str
-    MYSQL_DB: str
+    DATABASE_URL: str
 
     LOGGING_LEVEL: int = logging.INFO
 
