@@ -2,16 +2,13 @@ import logging
 import pathlib
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic_core import MultiHostUrl
-from pydantic import MySQLDsn
 
 ROOT_DIR: pathlib.Path = pathlib.Path(__file__).parent.parent.resolve()
-print(f"{str(ROOT_DIR)}/.env")
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        # Use top level .envf"{str(ROOT_DIR)}/.env" file
+        # Use top level .env f"{str(ROOT_DIR)}/.env" file
         env_file=f"{str(ROOT_DIR)}/.env",
         env_ignore_empty=True,
         extra="ignore",

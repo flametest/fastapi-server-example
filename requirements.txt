@@ -36,3 +36,5 @@ watchfiles==1.0.4
 websockets==14.1
 
 SQLAlchemy~=2.0.37
+python-jose~=3.3.0
+passlib~=1.7.4
