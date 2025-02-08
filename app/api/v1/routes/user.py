@@ -2,25 +2,25 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from app.schemas.enum import Gender
 from app.schemas.user import UserDetail, UserCreate
-from sqlalchemy.orm import Session
-from app.db.session import get_db
+from app.api.v1.dependencies.db import DB
 from app.models.user import User
+from starlette import status
 from app.api.v1.dependencies.auth import get_current_user, get_password_hash
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.post("/register", response_model=dict)
-async def register(user: UserCreate, db: Session = Depends(get_db)):
+async def register(user: UserCreate, db: DB):
     # 检查邮箱是否已存在
     db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
 
     # 检查用户名是否已存在
     db_user = db.query(User).filter(User.username == user.username).first()
     if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
 
     # 创建新用户
     hashed_password = get_password_hash(user.password)
