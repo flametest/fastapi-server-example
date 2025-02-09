@@ -44,5 +44,8 @@ async def read_users_me(current_user=Depends(get_current_user)):
 
 
 @router.get(path="/{user_id}", response_model=UserDetail)
-def get_user_detail(user_id: int) -> UserDetail:
-    return UserDetail(id=user_id, username="", email="xx@gg.com", gender=Gender.MALE)
+def get_user_detail(user_id: int, db: DB, current_user=Depends(get_current_user)) -> UserDetail:
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return UserDetail(id=db_user.id, email=db_user.email, username=db_user.username, gender=db_user.gender)
