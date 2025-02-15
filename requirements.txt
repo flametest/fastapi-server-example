@@ -38,3 +38,5 @@ websockets==14.1
 SQLAlchemy~=2.0.37
 python-jose~=3.3.0
 passlib~=1.7.4
+dependency-injector~=4.45.0
+aioredis~=2.0.1
