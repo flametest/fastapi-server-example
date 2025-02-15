@@ -4,6 +4,7 @@ from app.interfaces.schemas.user import UserDetail, UserCreate, UserListResponse
 from app.interfaces.api.v1.dependencies.db import DB
 from app.infrastructure.persistence.models.user import User
 from starlette import status
+from app.application.queries.query_factory import Que
 from app.interfaces.api.v1.dependencies.auth import get_current_user, get_password_hash
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -49,19 +50,21 @@ def get_user_detail(user_id: int, db: DB, current_user=Depends(get_current_user)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return UserDetail(id=db_user.id, email=db_user.email, username=db_user.username, gender=db_user.gender)
 
+
 @router.get("/{user_id}/v1", response_model=UserDetail)
 async def get_user(
-    user_id: int,
-    query_factory: QueryFactory = Depends()
+        user_id: int,
+        query_factory: QueryFactory = Depends()
 ):
     user_queries = query_factory.create_user_queries()
     return await user_queries.get_user_by_id(user_id)
 
+
 @router.get("", response_model=UserListResponse)
 async def list_users(
-    skip: int = 0,
-    limit: int = 10,
-    query_factory: QueryFactory = Depends()
+        skip: int = 0,
+        limit: int = 10,
+        query_factory: QueryFactory = Depends()
 ):
     user_queries = query_factory.create_user_queries()
     users = await user_queries.get_users(skip=skip, limit=limit)

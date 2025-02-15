@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr, validator, field_validator
 from app.interfaces.schemas.enum import Gender
@@ -30,7 +30,9 @@ class UserDetail(BaseModel):
     gender: Gender
 
     class Config:
+        # deprecated
         orm_mode = True
+        from_attributes = True
 
 
 class UserListResponse(BaseModel):
