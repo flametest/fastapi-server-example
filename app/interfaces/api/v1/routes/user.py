@@ -54,9 +54,8 @@ def get_user_detail(user_id: int, db: DB, current_user=Depends(get_current_user)
 @router.get("/{user_id}/v1", response_model=UserDetail)
 async def get_user(
         user_id: int,
-        query_factory: QueryFactory = Depends()
+        user_queries: UserQueries = Depends(Provider[UserQueries])
 ):
-    user_queries = query_factory.create_user_queries()
     return await user_queries.get_user_by_id(user_id)
 
 

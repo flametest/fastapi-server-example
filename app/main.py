@@ -3,10 +3,13 @@ import uvicorn
 
 from app.config import settings
 from app.interfaces.api import router as api_router
+from app.application.di.factory import create_container
 
 
 def init_app() -> fastapi.FastAPI:
     app = fastapi.FastAPI()
+    container = create_container()
+    app.container = container
     app.include_router(router=api_router, prefix=settings.API_PREFIX)
     return app
 
