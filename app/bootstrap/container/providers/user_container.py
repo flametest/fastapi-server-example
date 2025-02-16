@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from app.infrastructure.repository.user_repository import UserRepository
+from app.infrastructure.persistence.repository.user_repository import UserRepository
 from app.domain.services.user_service import UserService
 
 

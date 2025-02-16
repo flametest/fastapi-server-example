@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.infrastructure.persistence.databases.session import DatabaseSession
+from app.infrastructure.database.session import DatabaseSession
 
 
 # 或者使用 UnitOfWork
 # async with UnitOfWork() as uow:
-    # 在事务中执行操作
-    # await repository.create(entity)
+# 在事务中执行操作
+# await repository.create(entity)
 
 class UnitOfWork:
     def __init__(self):

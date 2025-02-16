@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String
-from app.db.session import Base
+
+from app.infrastructure.database.session import Base
 
 
 class Company(Base):

@@ -1,5 +1,5 @@
 from app.application.queries.user_queries import UserQueries
-from app.infrastructure.repository.user_repository import UserRepository
+from app.infrastructure.persistence.repository.user_repository import UserRepository
 
 
 class QueryFactory:

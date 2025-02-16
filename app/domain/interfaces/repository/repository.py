@@ -2,7 +2,7 @@ from typing import Generic, TypeVar, List, Dict, Any, Optional
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infrastructure.persistence.databases.session import DatabaseSession
+from app.infrastructure.database.session import DatabaseSession
 
 T = TypeVar('T')
 

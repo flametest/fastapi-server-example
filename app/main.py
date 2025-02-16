@@ -1,20 +1,12 @@
+import asyncio
+
 import fastapi
 import uvicorn
 
 from app.config import settings
-from app.interfaces.api import router as api_router
-from app.application.di.factory import create_container
+from app.bootstrap.startup import bootstrap_app
 
-
-def init_app() -> fastapi.FastAPI:
-    app = fastapi.FastAPI()
-    container = create_container()
-    app.container = container
-    app.include_router(router=api_router, prefix=settings.API_PREFIX)
-    return app
-
-
-app: fastapi.FastAPI = init_app()
+app: fastapi.FastAPI = asyncio.run(bootstrap_app())
 
 if __name__ == '__main__':
     uvicorn.run(

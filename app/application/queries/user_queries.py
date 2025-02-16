@@ -1,5 +1,5 @@
 from typing import Optional, List
-from app.infrastructure.repository.user_repository import UserRepository
+from app.infrastructure.persistence.repository.user_repository import UserRepository
 from app.interfaces.schemas.user import UserDetail
 
 

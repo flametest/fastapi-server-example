@@ -1,8 +1,8 @@
 from dependency_injector import containers, providers
 
 from app.config import settings
-from app.infrastructure.persistence.databases.session import DatabaseSession
-from app.application.di.providers.user_container import UserContainer
+from app.infrastructure.database.session import DatabaseSession
+from app.bootstrap.container.providers.user_container import UserContainer
 
 
 # 后续可以导入更多的子容器
