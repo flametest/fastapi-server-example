@@ -1,10 +1,11 @@
+from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, HTTPException
 
+from app.application.queries.user_queries import UserQueries
 from app.interfaces.schemas.user import UserDetail, UserCreate, UserListResponse
 from app.interfaces.api.v1.dependencies.db import DB
 from app.infrastructure.persistence.models.user import User
 from starlette import status
-from app.application.queries.query_factory import Que
 from app.interfaces.api.v1.dependencies.auth import get_current_user, get_password_hash
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -54,7 +55,7 @@ def get_user_detail(user_id: int, db: DB, current_user=Depends(get_current_user)
 @router.get("/{user_id}/v1", response_model=UserDetail)
 async def get_user(
         user_id: int,
-        user_queries: UserQueries = Depends(Provider[UserQueries])
+        user_queries: UserQueries = Depends(Provide[UserQueries])
 ):
     return await user_queries.get_user_by_id(user_id)
 
@@ -63,9 +64,8 @@ async def get_user(
 async def list_users(
         skip: int = 0,
         limit: int = 10,
-        query_factory: QueryFactory = Depends()
+        user_queries: UserQueries = Depends(Provide[UserQueries])
 ):
-    user_queries = query_factory.create_user_queries()
     users = await user_queries.get_users(skip=skip, limit=limit)
     total = len(users)  # 实际项目中应该从数据库获取总数
     return UserListResponse(

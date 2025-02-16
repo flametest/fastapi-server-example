@@ -1,16 +1,17 @@
 from dataclasses import dataclass
 import re
 
-from pydantic import validator, field_validator
+from pydantic import field_validator
 
 
 @dataclass(frozen=True)
 class Email:
     value: str
 
+    @classmethod
     @field_validator("value")
-    def validate_email(self, v):
-        if not self._is_valid_email(v):
+    def validate_email(cls, v):
+        if not cls._is_valid_email(v):
             raise ValueError("Invalid email format")
 
     @staticmethod

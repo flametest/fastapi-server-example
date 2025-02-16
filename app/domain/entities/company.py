@@ -1,23 +1,21 @@
-from dataclasses import dataclass
 from typing import Optional
-from pydantic import validator, field_validator
+from pydantic import field_validator, BaseModel
 from datetime import datetime
 
 
-@dataclass
-class Company:
+class Company(BaseModel):
     id: int
     name: str
-    address: Optional[str] = None
+    address: Optional[str] = ""
+    created_at: datetime = datetime.now()
+    updated_at: datetime = datetime.now()
 
-    @field_validator('name')
-    def validate_name(self, v):
+    @classmethod
+    @field_validator("name")
+    def validate_name(cls, v):
         if len(v.strip()) == 0:
             raise ValueError('公司名称不能为空')
         return v
 
-    created_at: datetime = datetime.now()
-    updated_at: datetime = datetime.now()
-
     class Config:
-        orm_mode = True
+        from_attributes = True

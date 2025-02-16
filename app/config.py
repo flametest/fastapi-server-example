@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     SERVER_HOST: str = "localhost"
     SERVER_PORT: int = 8080
 
-    API_PREFIX: str = ""
+    API_PREFIX: str = "/api/v1"
 
     DATABASE_URL: str
 

@@ -1,5 +1,7 @@
 from dependency_injector import containers, providers
 
+from app.application.commands.user_commands import UserCommands
+from app.application.queries.user_queries import UserQueries
 from app.infrastructure.persistence.repository.user_repository import UserRepository
 from app.domain.services.user_service import UserService
 
@@ -15,6 +17,11 @@ class UserContainer(containers.DeclarativeContainer):
         UserRepository,
         engine=db_engine
     )
+    # 服务层
+    user_service = providers.Singleton(
+        UserService,
+        user_repository=user_repository
+    )
 
     # 命令服务
     user_commands = providers.Factory(
@@ -25,11 +32,5 @@ class UserContainer(containers.DeclarativeContainer):
     # 查询服务
     user_queries = providers.Factory(
         UserQueries,
-        user_repository=user_repository
-    )
-
-    # 服务层
-    user_service = providers.Singleton(
-        UserService,
         user_repository=user_repository
     )
