@@ -1,17 +1,18 @@
-from uuid import UUID
 from typing import List, Optional
+
 from sqlalchemy import select
+
 from app.domain.interfaces.repository.repository import BaseRepository
 from app.infrastructure.persistence.models import Company
 
 
 class CompanyRepository(BaseRepository[Company]):
-    async def get_by_id(self, id: UUID) -> Optional[Company]:
+    async def get_by_id(self, id: int) -> Optional[Company]:
         query = select(Company).where(Company.id == id)
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def list_by_ids(self, ids: List[UUID]) -> List[Company]:
+    async def list_by_ids(self, ids: List[int]) -> List[Company]:
         query = select(Company).where(Company.id.in_(ids))
         result = await self.session.execute(query)
         return result.scalars().all()

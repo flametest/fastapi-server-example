@@ -1,5 +1,5 @@
 from typing import Generic, TypeVar, List, Dict, Any, Optional
-from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infrastructure.database.session import DatabaseSession
@@ -13,10 +13,10 @@ class BaseRepository(Generic[T]):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_by_id(self, id: UUID) -> Optional[T]:
+    async def get_by_id(self, id: int) -> Optional[T]:
         raise NotImplementedError
 
-    async def list_by_ids(self, ids: List[UUID]) -> List[T]:
+    async def list_by_ids(self, ids: List[int]) -> List[T]:
         raise NotImplementedError
 
     async def create(self, entity: T) -> T:
@@ -25,7 +25,7 @@ class BaseRepository(Generic[T]):
     async def update(self, entity: T) -> T:
         raise NotImplementedError
 
-    async def delete(self, id: UUID) -> bool:
+    async def delete(self, id: int) -> bool:
         raise NotImplementedError
 
     async def list(self, filters: Dict[str, Any]) -> List[T]:

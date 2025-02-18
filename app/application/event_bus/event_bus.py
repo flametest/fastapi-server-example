@@ -1,6 +1,7 @@
 from typing import Dict, List, Type, Callable
 import asyncio
 from app.domain.events.user_events import UserCreatedEvent, UserCompanyChangedEvent
+from app.domain.events.base import DomainEvent
 
 
 class EventBus:
