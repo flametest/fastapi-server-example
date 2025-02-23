@@ -5,16 +5,19 @@ from app.application.event_handlers.user_event_handlers import UserEventHandler
 from app.domain.aggregates.user import UserAggregate
 from app.domain.events.user_events import UserCreatedEvent, UserCompanyChangedEvent
 from app.domain.services.user_service import UserService as DomainUserService
+from app.infrastructure.persistence.unit_of_work import UnitOfWork
 
 
 class UserApplicationService:
     def __init__(
             self,
             domain_service: DomainUserService,
-            event_bus: EventBus
+            event_bus: EventBus,
+            unit_of_work: UnitOfWork
     ):
         self._domain_service = domain_service
         self._event_bus = event_bus
+        self._uow = unit_of_work
         self._init_event_handlers()
 
     def _init_event_handlers(self):
@@ -30,18 +33,19 @@ class UserApplicationService:
         self._event_bus.register_async(UserCompanyChangedEvent, handler.handle_company_changed_async)
 
     async def create_user(self, command: CreateUserCommand) -> UserAggregate:
-        # 通过领域服务创建用户
-        user = await self._domain_service.create_user({
-            "first_name": command.first_name,
-            "last_name": command.last_name,
-            "age": command.age,
-            "gender": command.gender,
-            "company_id": command.company_id
-        })
+        async with self._uow:  # 使用工作单元管理事务
+            # 通过领域服务创建用户
+            user = await self._domain_service.create_user({
+                "first_name": command.first_name,
+                "last_name": command.last_name,
+                "age": command.age,
+                "gender": command.gender,
+                "company_id": command.company_id
+            })
 
-        # 发布事件
-        event = UserCreatedEvent(user_id=user.id, company_id=user.company.id)
-        await self._event_bus.publish(event)
+            # 发布事件
+            event = UserCreatedEvent(user_id=user.id, company_id=user.company.id)
+            await self._event_bus.publish(event)
 
         return user
 
@@ -73,7 +77,7 @@ class UserApplicationService:
         # 发布事件
         event = UserCompanyChangedEvent(
             user_id=user.id,
-            old_company_id=user.company_id,
+            old_company_id=user.company.id,
             new_company_id=command.new_company_id
         )
         await self._event_bus.publish(event)

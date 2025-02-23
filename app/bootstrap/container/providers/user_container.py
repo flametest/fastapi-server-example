@@ -11,9 +11,10 @@ from app.infrastructure.persistence.repository.user_repository import UserReposi
 class UserContainer(containers.DeclarativeContainer):
     """联系人模块容器"""
 
-    # 依赖通用容器的数据库配置
+    # 依赖通用容器的配置
     db_engine = providers.Dependency()
     event_bus = providers.Dependency()
+    unit_of_work = providers.Dependency()
 
     # 仓储层
     user_repository = providers.Singleton(
