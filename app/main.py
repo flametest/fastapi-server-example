@@ -1,8 +1,8 @@
 import fastapi
 import uvicorn
 
-from app.config import settings
 from app.api import router as api_router
+from app.config import settings
 
 
 def init_app() -> fastapi.FastAPI:
@@ -11,13 +11,11 @@ def init_app() -> fastapi.FastAPI:
     return app
 
 
-app: fastapi.FastAPI = init_app()
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     uvicorn.run(
-        app="app.main:app",
+        app="app.main:init_app",
         host=settings.SERVER_HOST,
         port=settings.SERVER_PORT,
         log_level=settings.LOGGING_LEVEL,
-        # reload=True,
+        reload=True,
     )
