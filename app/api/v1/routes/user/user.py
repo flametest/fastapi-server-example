@@ -4,6 +4,7 @@ from starlette import status
 from app.api.v1.dependencies.auth import get_current_user, get_password_hash
 from app.api.v1.dependencies.db import DB
 from app.api.v1.routes.user.schema import UserCreate, UserDetail
+from app.core.enum import Gender
 from app.infra.models.user import User
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -11,7 +12,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.post("/register", response_model=dict)
 async def register(user: UserCreate, db: DB):
-    # 检查邮箱是否已存在
+    # check if the email exist
     db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
         raise HTTPException(
@@ -19,7 +20,7 @@ async def register(user: UserCreate, db: DB):
             detail="Email already registered",
         )
 
-    # 检查用户名是否已存在
+    # check if the username exist
     db_user = db.query(User).filter(User.username == user.username).first()
     if db_user:
         raise HTTPException(
@@ -27,7 +28,7 @@ async def register(user: UserCreate, db: DB):
             detail="Username already registered",
         )
 
-    # 创建新用户
+    # create new user
     hashed_password = get_password_hash(user.password)
     db_user = User(
         email=user.email,
@@ -63,5 +64,5 @@ def get_user_detail(
         id=db_user.id,
         email=db_user.email,
         username=db_user.username,
-        gender=db_user.gender,
+        gender=Gender(db_user.gender),
     )
