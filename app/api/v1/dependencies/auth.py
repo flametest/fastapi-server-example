@@ -1,14 +1,17 @@
-from fastapi import Depends, HTTPException, status, Request
-from fastapi.security import OAuth2PasswordBearer
-from app.api.v1.dependencies.db import DB
-from app.models.user import User
-from jose import JWTError, jwt
+import os
 from datetime import datetime, timedelta
 from typing import Optional
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
 from passlib.context import CryptContext
 
+from app.api.v1.dependencies.db import DB
+from app.models.user import User
+
 # JWT 配置
-SECRET_KEY = "your-secret-key"  # 建议从环境变量获取
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -46,7 +49,10 @@ def authenticate_user(username: str, password: str, db: DB):
     return user
 
 
-async def get_current_user(db: DB, token: str = Depends(oauth2_scheme), ):
+async def get_current_user(
+        db: DB,
+        token: str = Depends(oauth2_scheme),
+):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -61,8 +67,10 @@ async def get_current_user(db: DB, token: str = Depends(oauth2_scheme), ):
         raise credentials_exception
 
     # 这里添加从数据库获取用户的逻辑
-    # user = get_user_from_db(username)
-    # if user is None:
-    #     raise credentials_exception
-    # return user
+    """
+    user = get_user_from_db(username)
+    if user is None:
+        raise credentials_exception
+    return user
+    """
     return {"username": username}

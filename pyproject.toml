@@ -16,3 +16,23 @@ dependencies = [
     "ruff>=0.13.2",
     "sqlalchemy>=2.0.43",
 ]
+
+[tool.ruff]
+line-length = 80
+
+[tool.ruff.lint]
+select = [
+    "A",
+    "C90",
+    "COM",
+    "ERA001",
+    "F",
+    "I",
+    "N",
+    "S",
+    "T20",
+]
+
+ignore = [
+    "COM812",
+]
