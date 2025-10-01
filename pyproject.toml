@@ -23,10 +23,12 @@ line-length = 80
 [tool.ruff.lint]
 select = [
     "A",
+    "ASYNC",
     "C90",
     "COM",
     "ERA001",
     "F",
+    "FAST",
     "I",
     "N",
     "S",
@@ -36,3 +38,10 @@ select = [
 ignore = [
     "COM812",
 ]
+
+[[tool.mypy.overrides]]
+module = [
+    "jose.*",
+    "passlib.context",
+]
+ignore_missing_imports = true

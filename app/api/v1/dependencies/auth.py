@@ -8,7 +8,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 from app.api.v1.dependencies.db import DB
-from app.models.user import User
+from app.infra.models import User
 
 # JWT 配置
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -50,8 +50,8 @@ def authenticate_user(username: str, password: str, db: DB):
 
 
 async def get_current_user(
-        db: DB,
-        token: str = Depends(oauth2_scheme),
+    db: DB,
+    token: str = Depends(oauth2_scheme),
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

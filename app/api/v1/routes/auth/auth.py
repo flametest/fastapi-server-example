@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -16,7 +17,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 @router.post("/token")
 async def login_for_access_token(
     db: DB,
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ):
     # 这里添加验证用户凭据的逻辑
     user = authenticate_user(form_data.username, form_data.password, db)

@@ -3,8 +3,8 @@ from starlette import status
 
 from app.api.v1.dependencies.auth import get_current_user, get_password_hash
 from app.api.v1.dependencies.db import DB
-from app.models.user import User
-from app.schemas.user import UserCreate, UserDetail
+from app.api.v1.routes.user.schema import UserCreate, UserDetail
+from app.infra.models.user import User
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -33,7 +33,7 @@ async def register(user: UserCreate, db: DB):
         email=user.email,
         username=user.username,
         password=hashed_password,
-        gender=user.gender.value,
+        gender=user.gender.value if user.gender else None,
     )
 
     db.add(db_user)
@@ -48,11 +48,10 @@ async def read_users_me(current_user=Depends(get_current_user)):
     return current_user
 
 
-@router.get(path="/{user_id}", response_model=UserDetail)
+@router.get(path="/{user_id}")
 def get_user_detail(
-    user_id: int,
-    db: DB,
-    current_user=Depends(get_current_user),
+        user_id: int,
+        db: DB,
 ) -> UserDetail:
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:

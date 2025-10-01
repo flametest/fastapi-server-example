@@ -12,7 +12,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    APP_NAME: str
+    APP_NAME: str = "fastapi-server-example"
     ENV: Environment = Environment.DEV
 
     SERVER_HOST: str = "localhost"
@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     API_PREFIX: str = ""
 
-    DATABASE_URL: str
+    DATABASE_URL: str = "sqlite:///:memory:"
 
     LOGGING_LEVEL: int = logging.INFO
 
