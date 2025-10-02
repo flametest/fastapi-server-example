@@ -51,8 +51,8 @@ async def read_users_me(current_user=Depends(get_current_user)):
 
 @router.get(path="/{user_id}")
 def get_user_detail(
-        user_id: int,
-        db: DB,
+    user_id: int,
+    db: DB,
 ) -> UserDetail:
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
