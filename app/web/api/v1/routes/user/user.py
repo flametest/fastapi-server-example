@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
-from starlette import status
+from fastapi import APIRouter, Depends
 
-from app.api.v1.dependencies.auth import get_current_user, get_password_hash
-from app.api.v1.dependencies.db import DB
-from app.api.v1.routes.user.schema import UserCreate, UserDetail
 from app.core.enum import Gender
+from app.core.exception import BadRequestError, NotFoundError
 from app.infra.models.user import User
+from app.web.api.v1.dependencies.auth import get_current_user, get_password_hash
+from app.web.api.v1.dependencies.db import DB
+from app.web.api.v1.routes.user.schema import UserCreate, UserDetail
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -15,17 +15,15 @@ async def register(user: UserCreate, db: DB):
     # check if the email exist
     db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered",
+        raise BadRequestError(
+            "Email already registered",
         )
 
     # check if the username exist
     db_user = db.query(User).filter(User.username == user.username).first()
     if db_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already registered",
+        raise NotFoundError(
+            "Username already registered",
         )
 
     # create new user
@@ -56,9 +54,8 @@ def get_user_detail(
 ) -> UserDetail:
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
+        raise NotFoundError(
+            "User not found",
         )
     return UserDetail(
         id=db_user.id,

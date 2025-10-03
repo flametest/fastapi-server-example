@@ -7,8 +7,8 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-from app.api.v1.dependencies.db import DB
 from app.infra.models import User
+from app.web.api.v1.dependencies.db import DB
 
 # JWT 配置
 SECRET_KEY = os.getenv("SECRET_KEY")
