@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-from app.infra.models import User
+from app.service.user_service import get_user_service
 from app.web.api.v1.dependencies.db import DB
 
 # JWT 配置
@@ -40,11 +40,12 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def authenticate_user(username: str, password: str, db: DB):
-    user = db.query(User).filter(User.username == username).first()
+async def authenticate_user(username: str, password: str, db: DB):
+    user_service = get_user_service(db)
+    user = await user_service.get_user_by_username(username)
     if not user:
         return False
-    if not verify_password(password, user.password):
+    if not verify_password(password, user.password.get_secret_value()):
         return False
     return user
 

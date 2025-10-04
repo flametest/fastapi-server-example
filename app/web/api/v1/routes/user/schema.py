@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, SecretStr
 
 from app.core.enum import Gender
 
@@ -6,7 +6,7 @@ from app.core.enum import Gender
 class UserCreate(BaseModel):
     email: EmailStr
     username: str
-    password: str
+    password: SecretStr
     gender: Gender | None = None
 
 

@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends
 
 from app.core.enum import Gender
 from app.core.exception import BadRequestError, NotFoundError
-from app.infra.models.user import User
+from app.infra.models.user import UserModel
+from app.service.user_service import get_user_service
 from app.web.api.v1.dependencies.auth import get_current_user, get_password_hash
 from app.web.api.v1.dependencies.db import DB
 from app.web.api.v1.routes.user.schema import UserCreate, UserDetail
@@ -11,33 +12,34 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.post("/register", response_model=dict)
-async def register(user: UserCreate, db: DB):
+async def register(user_create: UserCreate, db: DB):
+    user_service = get_user_service(db)
     # check if the email exist
-    db_user = db.query(User).filter(User.email == user.email).first()
-    if db_user:
+    user = await user_service.get_user_by_email(user_create.email)
+    if user:
         raise BadRequestError(
             "Email already registered",
         )
 
     # check if the username exist
-    db_user = db.query(User).filter(User.username == user.username).first()
-    if db_user:
+    user = await user_service.get_user_by_username(user_create.username)
+    if user:
         raise NotFoundError(
             "Username already registered",
         )
 
     # create new user
-    hashed_password = get_password_hash(user.password)
-    db_user = User(
-        email=user.email,
-        username=user.username,
+    hashed_password = get_password_hash(user_create.password.get_secret_value())
+    db_user = UserModel(
+        email=user_create.email,
+        username=user_create.username,
         password=hashed_password,
-        gender=user.gender.value if user.gender else None,
+        gender=user_create.gender.value if user_create.gender else None,
     )
 
     db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    await db.commit()
+    await db.refresh(db_user)
 
     return {"message": "User registered successfully"}
 
@@ -48,18 +50,19 @@ async def read_users_me(current_user=Depends(get_current_user)):
 
 
 @router.get(path="/{user_id}")
-def get_user_detail(
+async def get_user_detail(
     user_id: int,
     db: DB,
 ) -> UserDetail:
-    db_user = db.query(User).filter(User.id == user_id).first()
-    if not db_user:
+    user_service = get_user_service(db)
+    user = await user_service.get_user_by_id(user_id)
+    if not user:
         raise NotFoundError(
             "User not found",
         )
     return UserDetail(
-        id=db_user.id,
-        email=db_user.email,
-        username=db_user.username,
-        gender=Gender(db_user.gender),
+        id=user.id,
+        email=user.email,
+        username=user.username,
+        gender=Gender(user.gender),
     )
