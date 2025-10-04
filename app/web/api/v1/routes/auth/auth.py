@@ -4,12 +4,12 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.api.v1.dependencies.auth import (
+from app.web.api.v1.dependencies.auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     authenticate_user,
     create_access_token,
 )
-from app.api.v1.dependencies.db import DB
+from app.web.api.v1.dependencies.db import DB
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 

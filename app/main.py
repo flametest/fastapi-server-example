@@ -1,13 +1,15 @@
 import fastapi
 import uvicorn
 
-from app.api import router as api_router
 from app.config import settings
+from app.web.api import router as api_router
+from app.web.application import setup_middlewares
 
 
 def init_app() -> fastapi.FastAPI:
     app = fastapi.FastAPI()
     app.include_router(router=api_router, prefix=settings.API_PREFIX)
+    setup_middlewares(app)
     return app
 
 
