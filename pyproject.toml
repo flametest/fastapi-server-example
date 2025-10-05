@@ -6,11 +6,12 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "aiomysql>=0.2.0",
+    "bcrypt==4.0.1",
     "fastapi[standard]>=0.118.0",
     "greenlet>=3.2.4",
     "mypy>=1.18.2",
     "orjson>=3.11.3",
-    "passlib[bcrypt]>=1.7.4",
+    "passlib>=1.7.4",
     "pre-commit>=4.3.0",
     "pydantic-settings>=2.11.0",
     "pytest>=8.4.2",

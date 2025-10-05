@@ -1,17 +1,17 @@
-import os
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Annotated, Optional
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-from app.service.user_service import get_user_service
+from app.config import settings
+from app.service.user_service import UserService, get_user_service
 from app.web.api.v1.dependencies.db import DB
 
 # JWT 配置
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -40,8 +40,11 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-async def authenticate_user(username: str, password: str, db: DB):
-    user_service = get_user_service(db)
+async def authenticate_user(
+    username: str,
+    password: str,
+    user_service: Annotated[UserService, Depends(get_user_service)],
+):
     user = await user_service.get_user_by_username(username)
     if not user:
         return False

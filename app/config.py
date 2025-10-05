@@ -1,4 +1,5 @@
 import logging
+import os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -23,6 +24,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///:memory:"
 
     LOGGING_LEVEL: int = logging.INFO
+
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "test")
 
     """
     def SQLALCHEMY_DATABASE_URI(self) -> MySQLDsn:
