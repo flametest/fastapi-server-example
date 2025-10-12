@@ -1,9 +1,11 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 
 from app.core.enum import Gender
 from app.core.exception import BadRequestError, NotFoundError
 from app.infra.models.user import UserModel
-from app.service.user_service import get_user_service
+from app.service.user_service import UserService, get_user_service
 from app.web.api.v1.dependencies.auth import get_current_user, get_password_hash
 from app.web.api.v1.dependencies.db import DB
 from app.web.api.v1.routes.user.schema import UserCreate, UserDetail
@@ -12,8 +14,11 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.post("/register", response_model=dict)
-async def register(user_create: UserCreate, db: DB):
-    user_service = get_user_service(db)
+async def register(
+    user_create: UserCreate,
+    db: DB,
+    user_service: Annotated[UserService, Depends(get_user_service)],
+):
     # check if the email exist
     user = await user_service.get_user_by_email(user_create.email)
     if user:
@@ -52,9 +57,8 @@ async def read_users_me(current_user=Depends(get_current_user)):
 @router.get(path="/{user_id}")
 async def get_user_detail(
     user_id: int,
-    db: DB,
+    user_service: Annotated[UserService, Depends(get_user_service)],
 ) -> UserDetail:
-    user_service = get_user_service(db)
     user = await user_service.get_user_by_id(user_id)
     if not user:
         raise NotFoundError(
