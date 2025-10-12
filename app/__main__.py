@@ -17,7 +17,7 @@ def init_app() -> fastapi.FastAPI:
 
 if __name__ == "__main__":
     uvicorn.run(
-        app="app.main:init_app",
+        app="app.__main__:init_app",
         host=settings.SERVER_HOST,
         port=settings.SERVER_PORT,
         log_level=settings.LOGGING_LEVEL,
