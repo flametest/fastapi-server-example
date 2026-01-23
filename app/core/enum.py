@@ -7,6 +7,7 @@ class Gender(str, Enum):
 
 
 class Environment(str, Enum):
+    LOCAL = "LOCAL"
     DEV = "DEV"
     TEST = "TEST"
     STAGING = "STAGING"

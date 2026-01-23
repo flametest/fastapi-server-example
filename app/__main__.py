@@ -1,7 +1,7 @@
 import fastapi
 import uvicorn
 
-from app.config import settings
+from app.config.settings import settings
 from app.core.logging import setup_logging
 from app.web.api import router as api_router
 from app.web.application import setup_middlewares

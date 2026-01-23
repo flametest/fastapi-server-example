@@ -1,26 +1,10 @@
-import os
+from collections.abc import AsyncGenerator
 
-from dotenv import load_dotenv
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.asyncio import AsyncSession
 
-load_dotenv()
-
-SQLALCHEMY_DATABASE_URL = os.getenv(
-    "DATABASE_URL", default="sqlite:///::memory:"
-)
-
-engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
-async_session_local = async_sessionmaker(
-    autocommit=False, autoflush=False, bind=engine
-)
-
-Base = declarative_base()
+from app.infra.db import Database
 
 
-async def get_db():
-    async with async_session_local() as db:
-        try:
-            yield db
-        finally:
-            await db.close()
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
+    async for session in Database.get_session():
+        yield session

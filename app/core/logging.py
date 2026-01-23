@@ -1,6 +1,6 @@
 import logging
 
-from app.config import settings
+from app.config.settings import settings
 
 """
 LOGGING_CONFIG = {

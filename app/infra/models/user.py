@@ -1,7 +1,7 @@
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.infra.db.session import Base
+from app.infra.db import Base
 
 
 class UserModel(Base):
